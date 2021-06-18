@@ -1,42 +1,31 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sharmari/mvc/services"
 	"github.com/sharmari/mvc/utils"
 )
 
-func GetUser(resp http.ResponseWriter, req *http.Request) {
-	//userIdParam := req.URL.Query().Get("user_id")
-	userId, err := strconv.ParseInt(req.URL.Query().Get("user_id"), 10, 64)
+func GetUser(c *gin.Context) {
+	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	if err != nil {
 		apiErr := &utils.ApplicationError{
-			Message:    fmt.Sprint("user id must be an integer !"),
-			StatusCode: http.StatusNotFound,
-			Code:       "not_found",
+			Message:    "user_id must be a number",
+			StatusCode: http.StatusBadRequest,
+			Code:       "bad_request",
 		}
-		jsonValue, _ := json.Marshal(apiErr)
-		resp.WriteHeader(apiErr.StatusCode)
-		resp.Write(jsonValue)
+		utils.RespondError(c, apiErr)
 		return
 	}
 
-	user, apiErr := services.GetUser(userId)
+	user, apiErr := services.UsersService.GetUser(userId)
 	if apiErr != nil {
-		jsonValue, _ := json.MarshalIndent(apiErr, "", "  ")
-		resp.WriteHeader(apiErr.StatusCode)
-		resp.Write([]byte(jsonValue))
+		utils.RespondError(c, apiErr)
 		return
 	}
-	log.Printf("about to process user_id %v", userId)
-	log.Printf("return the User to the client")
-	//v := reflect.ValueOf(user)
-	jsonValue, _ := json.Marshal(user)
-	resp.Write(jsonValue)
 
+	utils.Respond(c, http.StatusOK, user)
 }
