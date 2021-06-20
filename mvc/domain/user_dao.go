@@ -10,8 +10,7 @@ import (
 
 var (
 	users = map[int64]*User{
-		123: {Id: 1, FirstName: "Rishabh",
-			LastName: "Sharma", Email: "sharmarishabh148@gmail.com"},
+		123: {1, "Rishabh", "Sharma", "sharmarishabh148@gmail.com"},
 	}
 	UserDao userDaoInterface
 )
