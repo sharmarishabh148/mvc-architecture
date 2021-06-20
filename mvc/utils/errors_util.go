@@ -1,7 +1,7 @@
 package utils
 
 type ApplicationError struct {
-	Message    string `josn:"message"`
-	StatusCode int    `josn:"status"`
-	Code       string `josn:"code"`
+	Message    string `json:"message"`
+	StatusCode int    `json:"status"`
+	Code       string `json:"code"`
 }
